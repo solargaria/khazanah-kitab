@@ -1,0 +1,55 @@
+/*
+ * Custom Styles for Jawi Digital Book
+ *
+ * This file handles specific overrides for Jawi/Arabic text display (RTL)
+ * and custom reading modes (Sepia, Night).
+ */
+
+/* 1. Base RTL Support for Jawi Text */
+.jawi-text {
+    /* Define RTL direction and Arabic language setting as per blueprint (5.1) */
+    direction: rtl;
+    unicode-bidi: embed;
+    text-align: justify; /* Ensure justified text blocks */
+    line-height: 2.0; /* Increase line height for better readability of Arabic script */
+}
+
+/* 2. Font Setup (Assumption: Noto Naskh Arabic or Amiri is available) */
+/* Fallback structure provided for robustness */
+@font-face {
+    font-family: 'JawiScript';
+    src: url('/src/assets/jawi_font.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    /* Use a preferred Jawi font, with fallbacks */
+    font-family: 'JawiScript', 'Amiri', 'Noto Naskh Arabic', serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* 3. Sepia Mode (Paper Mode) Implementation */
+body.sepia-mode {
+    background-color: #fbf0e8; /* Light Sepia background */
+    color: #44372e; /* Dark brown text */
+    font-size: 1.1em; /* Slight bump for reading comfort */
+}
+
+/* 4. Night Mode Implementation (Night) */
+body.night-mode {
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    font-size: 1em;
+}
+
+/* 5. Standard/White Mode (White) - Default body styling */
+body:not(.sepia-mode):not(.night-mode) {
+    background-color: #ffffff;
+    color: #222222;
+}
+
+/*
+ * NOTE: In a real build, the font files (e.g., Noto Naskh Arabic) must be placed
+ * in the assets directory and correctly referenced above.
+*/
