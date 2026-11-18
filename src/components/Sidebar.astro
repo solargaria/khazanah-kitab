@@ -1,0 +1,112 @@
+---
+import { getCollection } from 'astro:content';
+
+const clean = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
+const all = (await getCollection('docs'))
+  .filter((e) => !e.data.draft)
+  .map((e) => ({ id: clean(e.id), title: e.data.title, data: e.data }));
+const href = (id: string) => `/${id}/`;
+const byId = (a: { id: string }, b: { id: string }) =>
+  a.id.localeCompare(b.id, 'en', { numeric: true });
+
+const LANG_LABEL: Record<string, string> = {
+  th: 'ไทย',
+  ms: 'มลายู (รูมี)',
+  'ms-arab': 'ยาวี',
+  ar: 'อาหรับ',
+};
+
+const current = Astro.url.pathname.replace(/^\/|\/$/g, '');
+const [catId, bookId, langId, fileId] = current.split('/');
+
+const categories = all.filter((e) => e.data.kind === 'category' && e.id.split('/').length === 1).sort(byId);
+const books = all.filter((e) => e.data.kind === 'book' && e.id.split('/').length === 2).sort(byId);
+
+const book = catId && bookId ? books.find((b) => b.id === `${catId}/${bookId}`) : undefined;
+const category = categories.find((c) => c.id === catId);
+
+let langs: string[] = [];
+let activeLang = '';
+let chapters: typeof all = [];
+if (book) {
+  const prefix = `${book.id}/`;
+  const inBook = all.filter((e) => e.id.startsWith(prefix) && e.id.split('/').length === 4);
+  langs = [...new Set(inBook.map((e) => e.id.split('/')[2]))];
+  langs.sort((a, b) => (a === 'th' ? -1 : b === 'th' ? 1 : a.localeCompare(b)));
+  activeLang = langs.includes(langId) ? langId : (langs[0] ?? '');
+  chapters = inBook.filter((e) => e.id.split('/')[2] === activeLang).sort(byId);
+}
+
+const langHref = (l: string) => {
+  if (!book) return '#';
+  const same = all.find((e) => e.id === `${book.id}/${l}/${fileId}`);
+  if (same) return href(same.id);
+  const first = all
+    .filter((e) => e.id.startsWith(`${book.id}/${l}/`) && e.id.split('/').length === 4)
+    .sort(byId)[0];
+  return first ? href(first.id) : href(book.id);
+};
+---
+
+<nav class="kk-nav" aria-label="สารบัญ">
+  {book ? (
+    <>
+      {category && <a class="kk-back" href={href(category.id)}>← {category.title}</a>}
+      <a class="kk-book" href={href(book.id)} aria-current={current === book.id ? 'page' : undefined}>
+        {book.title}
+      </a>
+      {langs.length > 0 && (
+        <div class="kk-langs" role="tablist">
+          {langs.map((l) => (
+            <a href={langHref(l)} class:list={['kk-lang', { active: l === activeLang }]}>
+              {LANG_LABEL[l.toLowerCase()] ?? l}
+            </a>
+          ))}
+        </div>
+      )}
+      <ul class="kk-list">
+        {chapters.map((c) => (
+          <li>
+            <a href={href(c.id)} aria-current={current === c.id ? 'page' : undefined}>
+              {c.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </>
+  ) : (
+    <ul class="kk-list">
+      {categories.map((c) => (
+        <li>
+          <a class="kk-cat" href={href(c.id)} aria-current={current === c.id ? 'page' : undefined}>
+            {c.title}
+          </a>
+          <ul class="kk-list kk-sub">
+            {books
+              .filter((b) => b.id.startsWith(`${c.id}/`))
+              .map((b) => (
+                <li>
+                  <a href={href(b.id)}>{b.title}</a>
+                </li>
+              ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+  )}
+</nav>
+
+<style>
+  .kk-nav { display: flex; flex-direction: column; gap: 0.75rem; font-size: var(--sl-text-sm); }
+  .kk-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+  .kk-sub { padding-inline-start: 1rem; margin-top: 0.15rem; }
+  a { color: var(--sl-color-gray-2); text-decoration: none; display: block; padding: 0.3rem 0.5rem; border-radius: 0.375rem; }
+  a:hover { color: var(--sl-color-white); background: var(--sl-color-gray-6); }
+  a[aria-current='page'] { color: var(--sl-color-text-accent); font-weight: 600; background: var(--sl-color-gray-6); }
+  .kk-back { color: var(--sl-color-gray-3); }
+  .kk-book { font-weight: 700; font-size: var(--sl-text-base); color: var(--sl-color-white); }
+  .kk-cat { font-weight: 700; color: var(--sl-color-white); }
+  .kk-langs { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .kk-lang { border: 1px solid var(--sl-color-gray-5); padding: 0.2rem 0.6rem; }
+  .kk-lang.active { background: var(--sl-color-text-accent); color: var(--sl-color-black); border-color: transparent; font-weight: 600; }
+</style>
