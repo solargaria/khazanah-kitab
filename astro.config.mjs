@@ -8,44 +8,8 @@ export default defineConfig({
     starlight({
       title: 'Khazanah Kitab',
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
-      sidebar: [
-  {
-    label: 'ตัฟซีร',
-    translations: { ms: 'Tafsir', 'ms-Arab': 'تفسير' },
-    items: [{ autogenerate: { directory: 'tafsir' } }],
-  },
-  {
-    label: 'อะกีดะฮ์',
-    translations: { ms: 'Akidah', 'ms-Arab': 'عقيدة' },
-    items: [{ autogenerate: { directory: 'aqidah' } }],
-  },
-  {
-    label: 'ฟิกฮ์',
-    translations: { ms: 'Fiqh', 'ms-Arab': 'فقه' },
-    items: [{ autogenerate: { directory: 'fiqh' } }],
-  },
-  {
-    label: 'ประวัติศาสตร์',
-    translations: { ms: 'Tarikh', 'ms-Arab': 'تاريخ' },
-    items: [{ autogenerate: { directory: 'tarikh' } }],
-  },
-],
-      defaultLocale: 'th',
-      locales: {
-        th: {
-          label: 'ไทย',
-          lang: 'th',
-        },
-        ms: {
-          label: 'Melayu (Rumi)',
-          lang: 'ms',
-        },
-        'ms-arab': {
-          label: 'ملايو (جاوي)',
-          lang: 'ms-Arab',
-          dir: 'rtl',
-        },
-      },
+      defaultLocale: 'root',
+      locales: { root: { label: 'ไทย', lang: 'th' } },
     }),
   ],
   site: 'https://example.com',
