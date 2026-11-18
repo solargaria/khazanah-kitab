@@ -1,32 +1,26 @@
-import { defineCollection, z } from 'astro:content';
-import { docsLoader } from '@astrojs/starlight/loaders';
-import { docsSchema } from '@astrojs/starlight/schema';
+// @ts-check
+import { defineConfig } from 'astro/config';
+import starlight from '@astrojs/starlight';
+import { unified } from '@astrojs/markdown-remark';
+import rehypeArabic from './src/plugins/rehype-arabic.mjs';
 
-const statusTags = ['original','human-translated','ai-translated','unreviewed','reviewed'] as const;
-const langs = ['th','ms','ms-Arab','ar'] as const;
-
-export const collections = {
-  docs: defineCollection({ 
-    loader: docsLoader(), 
-    schema: docsSchema({
-      extend: z.object({
-        kind: z.enum(['category','book','chapter']).default('chapter'),
-        lang: z.enum(langs).optional(),
-        dir: z.enum(['ltr','rtl']).optional(),
-        titleOriginal: z.string().optional(),
-        titleAr: z.string().optional(),
-        author: z.string().optional(),
-        authorDeathHijri: z.number().int().optional(),
-        originalLanguage: z.enum(langs).optional(),
-        languages: z.array(z.enum(langs)).optional(),
-        sourceEdition: z.string().optional(),
-        scanUrl: z.string().url().optional(),
-        translator: z.string().optional(),
-        surah: z.number().int().min(1).max(114).optional(),
-        ayahRange: z.string().optional(),
-        scanPages: z.string().optional(),
-        tags: z.array(z.enum(statusTags)).optional(),
-      }),
+// https://astro.build/config
+export default defineConfig({
+  site: 'https://example.com',
+  markdown: {
+    processor: unified({ rehypePlugins: [rehypeArabic] }),
+  },
+  integrations: [
+    starlight({
+      title: 'Khazanah Kitab',
+      social: [
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/solargaria/khazanah-kitab' },
+      ],
+      customCss: ['./src/styles/custom.css'],
+      defaultLocale: 'root',
+      locales: {
+        root: { label: 'ไทย', lang: 'th' },
+      },
     }),
-  }),
-};
+  ],
+});
