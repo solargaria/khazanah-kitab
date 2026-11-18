@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+
+const clean = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
+const all = (await getCollection('docs'))
+  .filter((e) => !e.data.draft)
+  .map((e) => ({ id: clean(e.id), title: e.data.title, data: e.data }));
+const byId = (a: { id: string }, b: { id: string }) =>
+  a.id.localeCompare(b.id, 'en', { numeric: true });
+
+const LANG_LABEL: Record<string, string> = {
+  th: 'ไทย',
+  ms: 'มลายู (รูมี)',
+  'ms-arab': 'ยาวี',
+  ar: 'อาหรับ',
+};
+
+const categories = all.filter((e) => e.data.kind === 'category' && e.id.split('/').length === 1).sort(byId);
+const books = all.filter((e) => e.data.kind === 'book' && e.id.split('/').length === 2).sort(byId);
+const langsOf = (bookId: string) =>
+  [...new Set(
+    all
+      .filter((e) => e.id.startsWith(`${bookId}/`) && e.id.split('/').length === 4)
+      .map((e) => e.id.split('/')[2]),
+  )];
+---
+
+<div class="kk-lib">
+  {categories.map((c) => {
+    const inCat = books.filter((b) => b.id.startsWith(`${c.id}/`));
+    return (
+      <section class="kk-cat">
+        <h2><a href={`/${c.id}/`}>{c.title}</a></h2>
+        {inCat.length === 0 ? (
+          <p class="kk-empty">ยังไม่มีหนังสือ</p>
+        ) : (
+          <ul>
+            {inCat.map((b) => (
+              <li>
+                <a class="kk-title" href={`/${b.id}/`}>{b.title}</a>
+                {b.data.titleOriginal && <span class="kk-orig" lang="ar" dir="rtl">{b.data.titleOriginal}</span>}
+                {b.data.author && <span class="kk-author">{b.data.author}</span>}
+                <span class="kk-langs">
+                  {langsOf(b.id).map((l) => <span class="kk-chip">{LANG_LABEL[l.toLowerCase()] ?? l}</span>)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    );
+  })}
+</div>
+
+<style>
+  .kk-lib { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: 2rem; }
+  .kk-cat { border: 1px solid var(--sl-color-gray-5); border-radius: 0.75rem; padding: 1rem 1.25rem; }
+  h2 { font-size: var(--sl-text-xl); margin: 0 0 0.75rem; }
+  h2 a { color: var(--sl-color-white); text-decoration: none; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; }
+  li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.6rem; }
+  .kk-title { font-weight: 700; color: var(--sl-color-text-accent); text-decoration: none; }
+  .kk-orig { font-family: var(--font-arabic); font-size: 1.15rem; }
+  .kk-author { width: 100%; font-size: var(--sl-text-sm); color: var(--sl-color-gray-3); }
+  .kk-langs { display: flex; gap: 0.35rem; width: 100%; }
+  .kk-chip { font-size: var(--sl-text-xs); border: 1px solid var(--sl-color-gray-5); border-radius: 999px; padding: 0.05rem 0.55rem; color: var(--sl-color-gray-2); }
+  .kk-empty { color: var(--sl-color-gray-3); font-size: var(--sl-text-sm); margin: 0; }
+</style>

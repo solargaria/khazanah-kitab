@@ -19,6 +19,7 @@ export default defineConfig({
       customCss: ['./src/styles/custom.css'],
       components: {
         Sidebar: './src/components/Sidebar.astro',
+        Pagination: './src/components/Pagination.astro',
       },
       defaultLocale: 'root',
       locales: {
