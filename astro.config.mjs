@@ -12,22 +12,22 @@ export default defineConfig({
   {
     label: 'ตัฟซีร',
     translations: { ms: 'Tafsir', 'ms-Arab': 'تفسير' },
-    autogenerate: { directory: 'tafsir' },
+    items: [{ autogenerate: { directory: 'tafsir' } }],
   },
   {
     label: 'อะกีดะฮ์',
     translations: { ms: 'Akidah', 'ms-Arab': 'عقيدة' },
-    autogenerate: { directory: 'aqidah' },
+    items: [{ autogenerate: { directory: 'aqidah' } }],
   },
   {
     label: 'ฟิกฮ์',
     translations: { ms: 'Fiqh', 'ms-Arab': 'فقه' },
-    autogenerate: { directory: 'fiqh' },
+    items: [{ autogenerate: { directory: 'fiqh' } }],
   },
   {
     label: 'ประวัติศาสตร์',
     translations: { ms: 'Tarikh', 'ms-Arab': 'تاريخ' },
-    autogenerate: { directory: 'tarikh' },
+    items: [{ autogenerate: { directory: 'tarikh' } }],
   },
 ],
       defaultLocale: 'th',
