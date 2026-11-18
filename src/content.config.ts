@@ -1,7 +1,6 @@
-import { defineCollection } from 'astro:content';
+import { defineCollection, z } from 'astro:content';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
-import { z } from 'zod';
 
 const statusTags = ['original','human-translated','ai-translated','unreviewed','reviewed'] as const;
 const langs = ['th','ms','ms-Arab','ar'] as const;

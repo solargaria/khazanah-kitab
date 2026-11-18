@@ -7,7 +7,8 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Khazanah Kitab',
-      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/solargaria/khazanah-kitab' }],
+      customCss: ['./src/styles/custom.css'],
       defaultLocale: 'root',
       locales: { root: { label: 'ไทย', lang: 'th' } },
     }),

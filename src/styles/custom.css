@@ -1,0 +1,33 @@
+@import '@fontsource/sarabun/400.css';
+@import '@fontsource/sarabun/600.css';
+@import '@fontsource/sarabun/700.css';
+@import '@fontsource/amiri/400.css';
+@import '@fontsource/amiri/700.css';
+@import '@fontsource/amiri-quran/400.css';
+
+:root {
+  --font-thai: 'Sarabun', system-ui, sans-serif;
+  --font-arabic: 'Amiri', 'Amiri Quran', serif;
+  --font-quran: 'Amiri Quran', 'Amiri', serif;
+  --sl-font: var(--font-thai);
+  --sl-line-height: 1.85;
+}
+
+.sl-markdown-content .arabic {
+  font-family: var(--font-arabic);
+  font-size: 1.45rem;
+  line-height: 1.95;
+  direction: rtl;
+  text-align: right;
+}
+
+.sl-markdown-content .arabic-inline {
+  font-family: var(--font-arabic);
+  font-size: 1.15em;
+  unicode-bidi: isolate;
+}
+
+.sl-markdown-content .ayah-ar {
+  font-family: var(--font-quran);
+  text-align: center;
+}
