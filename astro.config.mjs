@@ -10,12 +10,20 @@ export default defineConfig({
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
       sidebar: [
         {
-          label: 'Guides',
-          items: [],
+          label: 'ตัฟซีร',
+          items: [{ autogenerate: { directory: 'th/tafsir' } }],
         },
         {
-          label: 'Reference',
-          items: [{ autogenerate: { directory: 'reference' } }],
+          label: 'อะกีดะฮ์',
+          items: [{ autogenerate: { directory: 'th/aqidah' } }],
+        },
+        {
+          label: 'ฟิกฮ์',
+          items: [{ autogenerate: { directory: 'th/fiqh' } }],
+        },
+        {
+          label: 'ประวัติศาสตร์',
+          items: [{ autogenerate: { directory: 'th/tarikh' } }],
         },
       ],
       defaultLocale: 'th',
