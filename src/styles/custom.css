@@ -49,3 +49,7 @@
   border-radius: 0 0 0.5rem 0.5rem;
   background: var(--sl-color-gray-6);
 }
+/* จัดคอลัมน์เนื้อหาให้อยู่กลางพื้นที่ระหว่างแถบข้างซ้ายกับสารบัญขวา */
+.sl-container {
+  margin-inline: auto;
+}
